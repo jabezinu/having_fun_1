@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Cursor interactions
-    document.querySelectorAll('button, .nav-item, .theme-option, .nav-trigger').forEach(item => {
+    document.querySelectorAll('button, .nav-item, .theme-option, .hamburger').forEach(item => {
         item.addEventListener('mouseenter', () => {
             cursor.style.width = '16px';
             cursor.style.height = '16px';
@@ -34,46 +34,69 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Circular navigation
-    const navTrigger = document.querySelector('.nav-trigger');
-    const navItems = document.querySelector('.nav-items');
+    // Modern navigation
+    const hamburger = document.querySelector('.hamburger');
+    const navOverlay = document.querySelector('.nav-overlay');
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('section');
     
-    navTrigger.addEventListener('click', function() {
-        navItems.classList.toggle('hidden');
+    // Toggle menu
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navOverlay.classList.toggle('active');
         
-        // Add rotation effect on nav open/close
-        if (navItems.classList.contains('hidden')) {
-            navTrigger.style.transform = 'rotate(0deg)';
+        // Disable scroll when menu is open
+        if (navOverlay.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
         } else {
-            navTrigger.style.transform = 'rotate(45deg)';
+            document.body.style.overflow = '';
         }
     });
     
-    // Navigation items
-    const navItem = document.querySelectorAll('.nav-item');
-    const sections = document.querySelectorAll('section');
-    
-    navItem.forEach(item => {
+    // Navigation items click handlers
+    navItems.forEach(item => {
         item.addEventListener('click', function() {
             // Get section ID from data attribute
             const targetSection = document.getElementById(this.dataset.section + '-section');
             
-            // Hide nav after click
-            navItems.classList.add('hidden');
-            navTrigger.style.transform = 'rotate(0deg)';
+            // Close navigation
+            hamburger.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
             
-            // Remove active class from all items
-            navItem.forEach(el => el.classList.remove('active'));
+            // Apply staggered animation to menu items on close
+            navItems.forEach((navItem, index) => {
+                setTimeout(() => {
+                    navItem.style.opacity = '0';
+                    navItem.style.transform = 'translateY(20px)';
+                    
+                    // Reset styles after animation completes
+                    setTimeout(() => {
+                        navItem.style.opacity = '';
+                        navItem.style.transform = '';
+                    }, 500);
+                }, index * 50);
+            });
             
-            // Add active class to clicked item
+            // Update active states
+            navItems.forEach(navItem => navItem.classList.remove('active'));
             this.classList.add('active');
             
-            // Hide all sections
-            sections.forEach(section => section.classList.remove('active-section'));
-            
-            // Show target section
-            targetSection.classList.add('active-section');
+            // Show target section with a slight delay
+            setTimeout(() => {
+                sections.forEach(section => section.classList.remove('active-section'));
+                targetSection.classList.add('active-section');
+            }, 300);
         });
+    });
+    
+    // Add escape key to close menu
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && navOverlay.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     });
     
     // Counter functionality
@@ -239,7 +262,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }).onfinish = () => reveal.remove();
     }
     
-    // Add CSS for particles and reveal effect
+    // Add animation for page load
+    function initPageAnimation() {
+        const hamburgerEl = document.querySelector('.hamburger');
+        const logoEl = document.querySelector('.logo');
+        
+        // Animate hamburger
+        hamburgerEl.style.transform = 'translateY(-20px)';
+        hamburgerEl.style.opacity = '0';
+        
+        // Animate logo
+        logoEl.style.transform = 'translateY(-20px)';
+        logoEl.style.opacity = '0';
+        
+        // Animate in with delay
+        setTimeout(() => {
+            hamburgerEl.style.transform = 'translateY(0)';
+            hamburgerEl.style.opacity = '1';
+            
+            setTimeout(() => {
+                logoEl.style.transform = 'translateY(0)';
+                logoEl.style.opacity = '1';
+            }, 100);
+        }, 300);
+    }
+    
+    // Initialize page animation
+    initPageAnimation();
+    
+    // Add CSS for animations and particles
     const style = document.createElement('style');
     style.textContent = `
         .particle {
@@ -261,6 +312,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         button.active {
             transform: scale(0.9);
+        }
+        
+        .logo, .hamburger {
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), 
+                       opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
     `;
     document.head.appendChild(style);
