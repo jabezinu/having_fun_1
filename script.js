@@ -1,5 +1,40 @@
 // Wait for the DOM to fully load
 document.addEventListener('DOMContentLoaded', function() {
+    // Navigation
+    const navCounter = document.getElementById('nav-counter');
+    const navThemes = document.getElementById('nav-themes');
+    const counterSection = document.getElementById('counter-section');
+    const themesSection = document.getElementById('themes-section');
+    
+    // Navigation click handlers
+    navCounter.addEventListener('click', function() {
+        setActiveNav(navCounter);
+        setActiveSection(counterSection);
+    });
+    
+    navThemes.addEventListener('click', function() {
+        setActiveNav(navThemes);
+        setActiveSection(themesSection);
+    });
+    
+    function setActiveNav(element) {
+        // Remove active class from all nav items
+        document.querySelectorAll('nav li').forEach(item => {
+            item.classList.remove('active');
+        });
+        // Add active class to selected item
+        element.classList.add('active');
+    }
+    
+    function setActiveSection(element) {
+        // Hide all sections
+        document.querySelectorAll('main section').forEach(section => {
+            section.classList.remove('active-section');
+        });
+        // Show selected section
+        element.classList.add('active-section');
+    }
+    
     // Counter functionality
     const counterEl = document.getElementById('counter');
     const incrementBtn = document.getElementById('increment');
@@ -8,29 +43,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let count = 0;
     
+    // Function to update counter with animation
     function updateCounter(newValue) {
-        // Add animation class
-        counterEl.classList.add('animate');
+        // Add animation
+        counterEl.style.transform = 'scale(1.2)';
+        counterEl.style.opacity = '0.8';
         
         // Update the value
-        count = newValue;
-        counterEl.textContent = count;
-        
-        // Change color based on value
-        if (count > 0) {
-            counterEl.style.color = '#4CAF50';
-        } else if (count < 0) {
-            counterEl.style.color = '#f44336';
-        } else {
-            counterEl.style.color = '#4361ee';
-        }
-        
-        // Remove animation class after animation completes
         setTimeout(() => {
-            counterEl.classList.remove('animate');
-        }, 300);
+            count = newValue;
+            counterEl.textContent = count;
+            
+            // Change color based on value
+            if (count > 0) {
+                counterEl.style.color = '#40c057';
+            } else if (count < 0) {
+                counterEl.style.color = '#fa5252';
+            } else {
+                counterEl.style.color = 'var(--text-color)';
+            }
+            
+            // Reset animation
+            counterEl.style.transform = 'scale(1)';
+            counterEl.style.opacity = '1';
+        }, 150);
     }
     
+    // Button event listeners
     incrementBtn.addEventListener('click', function() {
         updateCounter(count + 1);
     });
@@ -60,109 +99,58 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Background color change functionality
-    const blueBtn = document.getElementById('color-blue');
-    const greenBtn = document.getElementById('color-green');
-    const pinkBtn = document.getElementById('color-pink');
-    const purpleBtn = document.getElementById('color-purple');
-    const colorResetBtn = document.getElementById('color-reset');
+    // Theme switchers
+    const themeLight = document.getElementById('theme-light');
+    const themeDark = document.getElementById('theme-dark');
+    const themeBlue = document.getElementById('theme-blue');
+    const themeGreen = document.getElementById('theme-green');
     
-    // Function to apply theme color
-    function applyTheme(bgColor, highlight) {
-        document.body.style.backgroundColor = bgColor;
+    // Function to apply theme
+    function applyTheme(themeName) {
+        // Remove all theme classes
+        document.body.classList.remove('dark-theme', 'blue-theme', 'green-theme');
         
-        // Add ripple effect to the button
-        const ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        document.body.appendChild(ripple);
+        // Add selected theme class
+        if (themeName !== 'light') {
+            document.body.classList.add(`${themeName}-theme`);
+        }
+        
+        // Add a subtle animation to highlight the theme change
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '9999';
+        overlay.style.transition = 'opacity 0.3s ease';
+        
+        document.body.appendChild(overlay);
         
         setTimeout(() => {
-            ripple.remove();
-        }, 1000);
-    }
-    
-    blueBtn.addEventListener('click', function() {
-        applyTheme('#cfe2ff');
-    });
-    
-    greenBtn.addEventListener('click', function() {
-        applyTheme('#d1e7dd');
-    });
-    
-    pinkBtn.addEventListener('click', function() {
-        applyTheme('#f8d7da');
-    });
-    
-    purpleBtn.addEventListener('click', function() {
-        applyTheme('#e2d9f3');
-    });
-    
-    colorResetBtn.addEventListener('click', function() {
-        applyTheme('#f8f9fa');
-    });
-    
-    // Add a subtle animation to the page
-    function addFloatingEffect() {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
+            overlay.style.opacity = '0';
             setTimeout(() => {
-                card.style.animation = 'none';
-                card.offsetHeight; // Trigger reflow
-                card.style.animation = 'float 3s infinite ease-in-out';
-                card.style.animationDelay = `${index * 0.2}s`;
-            }, 1000);
-        });
+                overlay.remove();
+            }, 300);
+        }, 50);
     }
     
-    // Add float animation after page loads
-    setTimeout(addFloatingEffect, 500);
+    // Theme click handlers
+    themeLight.addEventListener('click', function() {
+        applyTheme('light');
+    });
     
-    // Add CSS for animations
-    const style = document.createElement('style');
-    style.textContent = `
-        .animate {
-            animation: pulse 0.3s ease;
-        }
-        
-        .active {
-            transform: scale(0.9) !important;
-        }
-        
-        .ripple {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, transparent 10%, rgba(255,255,255,0.3) 10.01%) center/15000%;
-            opacity: 0;
-            animation: ripple 1s ease-out;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes ripple {
-            0% {
-                background-size: 0%;
-                opacity: 1;
-            }
-            100% {
-                background-size: 15000%;
-                opacity: 0;
-            }
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-    `;
-    document.head.appendChild(style);
+    themeDark.addEventListener('click', function() {
+        applyTheme('dark');
+    });
+    
+    themeBlue.addEventListener('click', function() {
+        applyTheme('blue');
+    });
+    
+    themeGreen.addEventListener('click', function() {
+        applyTheme('green');
+    });
 }); 
