@@ -5,24 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Webpage</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to My Simple Webpage</h1>
-        <p>This is a basic webpage created with HTML, CSS, and JavaScript.</p>
-        <div class="counter-container">
-            <h2>Counter: <span id="counter">0</span></h2>
-            <button id="increment">Increment</button>
-            <button id="decrement">Decrement</button>
-            <button id="reset">Reset</button>
+        <header>
+            <h1><i class="fas fa-rocket"></i> My Interactive Webpage</h1>
+            <p class="tagline">A beautifully designed interactive experience</p>
+        </header>
+        
+        <div class="card counter-container">
+            <div class="card-header">
+                <i class="fas fa-calculator"></i>
+                <h2>Interactive Counter</h2>
+            </div>
+            <div class="counter-value" id="counter">0</div>
+            <div class="button-group">
+                <button id="decrement"><i class="fas fa-minus"></i></button>
+                <button id="reset"><i class="fas fa-sync-alt"></i></button>
+                <button id="increment"><i class="fas fa-plus"></i></button>
+            </div>
         </div>
-        <div class="color-container">
-            <h2>Change Background Color</h2>
-            <button id="color-blue">Blue</button>
-            <button id="color-green">Green</button>
-            <button id="color-pink">Pink</button>
-            <button id="color-reset">Reset</button>
+        
+        <div class="card color-container">
+            <div class="card-header">
+                <i class="fas fa-paint-brush"></i>
+                <h2>Theme Changer</h2>
+            </div>
+            <p>Select a color theme for the page</p>
+            <div class="color-palette">
+                <button id="color-blue" class="color-btn"><span class="color-preview blue"></span>Blue</button>
+                <button id="color-green" class="color-btn"><span class="color-preview green"></span>Green</button>
+                <button id="color-pink" class="color-btn"><span class="color-preview pink"></span>Pink</button>
+                <button id="color-purple" class="color-btn"><span class="color-preview purple"></span>Purple</button>
+                <button id="color-reset" class="color-btn"><i class="fas fa-undo"></i> Reset</button>
+            </div>
         </div>
+        
+        <footer>
+            <p>Created with <i class="fas fa-heart"></i> using HTML, CSS & JavaScript</p>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>
