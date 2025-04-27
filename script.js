@@ -203,14 +203,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add keyboard support
     document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowUp') {
+            e.preventDefault(); // Prevent page scrolling
             updateCounter(count + 1);
             incrementBtn.classList.add('active');
             setTimeout(() => incrementBtn.classList.remove('active'), 200);
         } else if (e.key === 'ArrowDown') {
+            e.preventDefault(); // Prevent page scrolling
             updateCounter(count - 1);
             decrementBtn.classList.add('active');
             setTimeout(() => decrementBtn.classList.remove('active'), 200);
         } else if (e.key === 'r') {
+            e.preventDefault(); // Prevent page refreshing
             updateCounter(0);
             resetBtn.classList.add('active');
             setTimeout(() => resetBtn.classList.remove('active'), 200);
